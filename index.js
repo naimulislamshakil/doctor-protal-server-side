@@ -8,6 +8,13 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+app.get("/tastmonial", (req, res) => {
+    const quary = {};
+    // const corsur = tastmonialCollaction.find(quary);
+    const result = await corsur.toArray();
+    res.send(result);
+})
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
