@@ -8,15 +8,42 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// xQHBcXkJZgrXz2qX
+//
 // doctor_por_tal
 
-// app.get("/tastmonial", (req, res) => {
-//     const quary = {};
-//     // const corsur = tastmonialCollaction.find(quary);
-//     const result = await corsur.toArray();
-//     res.send(result);
-// })
+// Mongodb client connect
+
+const { MongoClient, ServerApiVersion } = require("mongodb");
+const uri = `mongodb+srv://${process.env.ACCESS_USERNAME}:${process.env.ACCESS_PASSWORD}@cluster0.pninc.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverApi: ServerApiVersion.v1,
+});
+console.log("db connect");
+
+async function run() {
+  try {
+    await client.connect();
+
+    const tastmonialCollaction = client
+      .db("doctorPortal")
+      .collection("treatment");
+
+    app.get("/tastmonial", async (req, res) => {
+      const quary = {};
+      const corsur = tastmonialCollaction.find(quary);
+      const result = await corsur.toArray();
+      res.send(result);
+    });
+  } finally {
+    // client.close();
+  }
+}
+
+// colling function
+
+run().catch(console.dir);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
