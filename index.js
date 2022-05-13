@@ -30,7 +30,7 @@ async function run() {
       .db("doctorPortal")
       .collection("treatment");
 
-    app.get("/tastmonial", async (req, res) => {
+    app.get("/treatment", async (req, res) => {
       const quary = {};
       const corsur = tastmonialCollaction.find(quary);
       const result = await corsur.toArray();
