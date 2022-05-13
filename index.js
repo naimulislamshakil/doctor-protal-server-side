@@ -17,24 +17,23 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
-console.log("db connect");
 
 async function run() {
   try {
     await client.connect();
 
-    const tastmonialCollaction = client
+    const treatmentCollaction = client
       .db("doctorPortal")
       .collection("treatment");
 
     app.get("/treatment", async (req, res) => {
       const quary = {};
-      const corsur = tastmonialCollaction.find(quary);
-      const result = await corsur.toArray();
+      const corser = treatmentCollaction.find(quary);
+      const result = await corser.toArray();
       res.send(result);
     });
   } finally {
-    await client.close();
+    // await client.close()
   }
 }
 
