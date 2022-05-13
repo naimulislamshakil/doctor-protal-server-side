@@ -22,13 +22,31 @@ async function run() {
   try {
     await client.connect();
 
+    // treatment collection
+
     const treatmentCollaction = client
       .db("doctorPortal")
       .collection("treatment");
 
+    //   tastmonial collection
+    const tastmonialCallection = client
+      .db("doctorPortal")
+      .collection("tastmonial");
+
+    // treatment api section
+
     app.get("/treatment", async (req, res) => {
       const quary = {};
       const corser = treatmentCollaction.find(quary);
+      const result = await corser.toArray();
+      res.send(result);
+    });
+
+    //   tastmonial api section
+
+    app.get("/tastmonial", async (req, res) => {
+      const quary = {};
+      const corser = tastmonialCallection.find(quary);
       const result = await corser.toArray();
       res.send(result);
     });
