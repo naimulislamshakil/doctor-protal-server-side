@@ -58,8 +58,18 @@ async function run() {
     // apponment api section
     app.post("/booking", async (req, res) => {
       const apponmentDetils = req.body;
-      const result = await apponmentCallection.insertOne(apponmentDetils);
-      res.send(result);
+      const quary = {
+        treatment: apponmentDetils.treatmentName,
+        date: apponmentDetils.timeHour,
+        personName: apponmentDetils.personName,
+      };
+      const exists = await apponmentCallection.findOne(quary);
+      if (exists) {
+        return res.send({ success: false, booking: exists });
+      } else {
+        const result = await apponmentCallection.insertOne(apponmentDetils);
+        res.send({ success: true, booking: result });
+      }
     });
   } finally {
     // await client.close()
