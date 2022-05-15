@@ -33,6 +33,10 @@ async function run() {
       .db("doctorPortal")
       .collection("tastmonial");
 
+    const apponmentCallection = client
+      .db("doctorPortal")
+      .collection("apponment");
+
     // treatment api section
 
     app.get("/treatment", async (req, res) => {
@@ -48,6 +52,13 @@ async function run() {
       const quary = {};
       const corser = tastmonialCallection.find(quary);
       const result = await corser.toArray();
+      res.send(result);
+    });
+
+    // apponment api section
+    app.post("/booking", async (req, res) => {
+      const apponmentDetils = req.body;
+      const result = await apponmentCallection.insertOne(apponmentDetils);
       res.send(result);
     });
   } finally {
