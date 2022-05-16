@@ -60,15 +60,15 @@ async function run() {
       const apponmentDetils = req.body;
       const quary = {
         treatment: apponmentDetils.treatmentName,
-        date: apponmentDetils.timeHour,
-        personName: apponmentDetils.personName,
+        date: apponmentDetils.date,
+        email: apponmentDetils.email,
       };
       const exists = await apponmentCallection.findOne(quary);
       if (exists) {
         return res.send({ success: false, booking: exists });
       } else {
         const result = await apponmentCallection.insertOne(apponmentDetils);
-        res.send({ success: true, booking: result });
+        res.send({ success: true, result });
       }
     });
   } finally {
