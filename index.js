@@ -63,7 +63,8 @@ async function run() {
         date: apponmentDetils.date,
         email: apponmentDetils.email,
       };
-      const exists = await apponmentCallection.findOne(quary);
+      const exists = await apponmentCallection.findOne(apponmentDetils);
+      // console.log(exists);
       if (exists) {
         return res.send({ success: false, booking: exists });
       } else {
