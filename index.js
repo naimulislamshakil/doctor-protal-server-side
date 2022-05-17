@@ -92,7 +92,7 @@ async function run() {
         );
         const booked = serviceBookings.map((s) => s.hour);
         const available = service.time.filter((book) => !booked.includes(book));
-        service.time = available;
+        service.available = available;
       });
       res.send(treatment);
     });
