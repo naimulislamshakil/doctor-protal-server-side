@@ -94,7 +94,7 @@ async function run() {
         const available = service.time.filter((book) => !booked.includes(book));
         service.time = available;
       });
-      console.log(date);
+
       res.send(treatment);
     });
   } finally {
