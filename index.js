@@ -76,7 +76,7 @@ async function run() {
     // Get all treatementCollaction time and exclude given booking apponment
 
     app.get("/available", async (req, res) => {
-      const date = req.query.date || "May 17, 2022";
+      const date = req.query.date;
 
       // step 1: get all treatment collaction
 
@@ -86,14 +86,14 @@ async function run() {
       const bookingApponment = await apponmentCallection.find(quary).toArray();
       // step 3: for eatch treatment ,find bookingApponment for that treatment
       treatment.forEach((service) => {
-        console.log(service);
         const serviceBookings = bookingApponment.filter(
           (b) => b.treatmentName === treatment.treatmentName
         );
         const booked = serviceBookings.map((s) => s.hour);
         const available = service.time.filter((book) => !booked.includes(book));
-        service.available = available;
+        service.time = available;
       });
+      // console.log(treatment);
       res.send(treatment);
     });
   } finally {
