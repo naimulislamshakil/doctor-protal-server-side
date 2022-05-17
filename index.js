@@ -87,13 +87,14 @@ async function run() {
       // step 3: for eatch treatment ,find bookingApponment for that treatment
       treatment.forEach((service) => {
         const serviceBookings = bookingApponment.filter(
-          (b) => b.treatmentName === treatment.treatmentName
+          (b) => b.treatmentName === service.name
         );
+        // console.log(serviceBookings);
         const booked = serviceBookings.map((s) => s.hour);
         const available = service.time.filter((book) => !booked.includes(book));
         service.time = available;
       });
-      // console.log(treatment);
+      console.log(date);
       res.send(treatment);
     });
   } finally {
