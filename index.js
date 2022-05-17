@@ -72,6 +72,30 @@ async function run() {
         res.send({ success: true, result });
       }
     });
+
+    // Get all treatementCollaction time and exclude given booking apponment
+
+    app.get("/available", async (req, res) => {
+      const date = req.query.date || "May 17, 2022";
+
+      // step 1: get all treatment collaction
+
+      const treatment = await treatmentCollaction.find().toArray();
+      // step 2: get the booking of that day
+      const quary = { date: date };
+      const bookingApponment = await apponmentCallection.find(quary).toArray();
+      // step 3: for eatch treatment ,find bookingApponment for that treatment
+      treatment.forEach((service) => {
+        console.log(service);
+        const serviceBookings = bookingApponment.filter(
+          (b) => b.treatmentName === treatment.treatmentName
+        );
+        const booked = serviceBookings.map((s) => s.hour);
+        const available = service.time.filter((book) => !booked.includes(book));
+        service.available = available;
+      });
+      res.send(treatment);
+    });
   } finally {
     // await client.close()
   }
