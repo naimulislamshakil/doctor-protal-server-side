@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv").config();
@@ -33,9 +34,30 @@ async function run() {
       .db("doctorPortal")
       .collection("tastmonial");
 
+    // apponment Callection
     const apponmentCallection = client
       .db("doctorPortal")
       .collection("apponment");
+
+    // user collection
+    const userCallection = client.db("doctorPortal").collection("user");
+
+    // user store api
+
+    app.put("/user/:email", async (req, res) => {
+      const email = req.params.email;
+      const user = req.body;
+      const quary = { email: email };
+      const option = { upsert: true };
+      const update = {
+        $set: user,
+      };
+      const result = await userCallection.updateOne(quary, update, option);
+      const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN, {
+        expiresIn: "1h",
+      });
+      res.send({ result, token });
+    });
 
     // treatment api section
 
