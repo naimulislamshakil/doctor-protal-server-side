@@ -56,6 +56,13 @@ async function run() {
     });
 
     // apponment api section
+    app.get("/booking", async (req, res) => {
+      const email = req.query.email;
+      const quary = { email: email };
+      const bookingApponment = await apponmentCallection.find(quary).toArray();
+      res.send(bookingApponment);
+    });
+
     app.post("/booking", async (req, res) => {
       const apponmentDetils = req.body;
       const quary = {
