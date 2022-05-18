@@ -56,6 +56,7 @@ async function run() {
       const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN, {
         expiresIn: "1h",
       });
+
       res.send({ result, token });
     });
 
