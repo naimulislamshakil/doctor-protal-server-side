@@ -66,12 +66,12 @@ async function run() {
     app.post("/booking", async (req, res) => {
       const apponmentDetils = req.body;
       const quary = {
-        treatment: apponmentDetils.treatmentName,
+        treatmentName: apponmentDetils.treatmentName,
         date: apponmentDetils.date,
         email: apponmentDetils.email,
       };
-      const exists = await apponmentCallection.findOne(apponmentDetils);
-      // console.log(exists);
+      const exists = await apponmentCallection.findOne(quary);
+
       if (exists) {
         return res.send({ success: false, booking: exists });
       } else {
