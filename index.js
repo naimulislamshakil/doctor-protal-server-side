@@ -82,13 +82,19 @@ async function run() {
     // make user admin api
     app.put("/user/admin/:email", async (req, res) => {
       const email = req.params.email;
-      const quary = { email: email };
-      const update = {
-        $set: { role: "admin" },
-      };
-      const result = await userCallection.updateOne(quary, update);
+      const requester = req.decoded.email;
+      const requesterAccount = await userCallection.findOne(requester);
+      if (requesterAccount.role === "admin") {
+        const quary = { email: email };
+        const update = {
+          $set: { role: "admin" },
+        };
+        const result = await userCallection.updateOne(quary, update);
 
-      res.send(result);
+        res.send(result);
+      } else {
+        res.status(403).send("Forbidden access");
+      }
     });
 
     // get all user
