@@ -46,16 +46,14 @@ async function run() {
 
     app.put("/user/:email", async (req, res) => {
       const email = req.params.email;
-      console.log(email);
       const user = req.body;
-      console.log(user);
       const quary = { email: email };
       const option = { upsert: true };
       const update = {
         $set: user,
       };
       const result = await userCallection.updateOne(quary, update, option);
-      const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN, {
+      const token = jwt.sign(quary, process.env.ACCESS_TOKEN, {
         expiresIn: "1h",
       });
 
