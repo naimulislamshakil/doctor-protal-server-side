@@ -46,7 +46,9 @@ async function run() {
 
     app.put("/user/:email", async (req, res) => {
       const email = req.params.email;
+      console.log(email);
       const user = req.body;
+      console.log(user);
       const quary = { email: email };
       const option = { upsert: true };
       const update = {
