@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+
 require("dotenv").config();
 const port = process.env.PORT || 5000;
 
@@ -18,6 +19,24 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
+
+// verify jwt token
+
+function verifyToken(req, res, next) {
+  const authorization = req.headers.authorization;
+  if (!authorization) {
+    return res.status(401).send({ massage: "Unauthorization access" });
+  }
+  const token = authorization.split(" ")[1];
+  jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
+    if (err) {
+      res.status(403).send({ massage: "Forbidden access" });
+    }
+    req.decoded = decoded;
+    console.log(req.decoded);
+    next();
+  });
+}
 
 async function run() {
   try {
@@ -60,6 +79,32 @@ async function run() {
       res.send({ result, token });
     });
 
+    // make user admin api
+    app.put("/user/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const quary = { email: email };
+      const update = {
+        $set: { role: "admin" },
+      };
+      const result = await userCallection.updateOne(quary, update);
+
+      res.send(result);
+    });
+
+    // get all user
+    app.get("/user", verifyToken, async (req, res) => {
+      const user = await userCallection.find().toArray();
+      res.send(user);
+    });
+
+    // delete user
+    app.delete("/user/:id", verifyToken, async (req, res) => {
+      const id = req.params.id;
+      const quary = { _id: ObjectId(id) };
+      const result = await userCallection.deleteOne(quary);
+      res.send(result);
+    });
+
     // treatment api section
 
     app.get("/treatment", async (req, res) => {
@@ -79,11 +124,18 @@ async function run() {
     });
 
     // apponment api section
-    app.get("/booking", async (req, res) => {
+    app.get("/booking", verifyToken, async (req, res) => {
       const email = req.query.email;
-      const quary = { email: email };
-      const bookingApponment = await apponmentCallection.find(quary).toArray();
-      res.send(bookingApponment);
+      const decodedEmail = req.decoded.email;
+      if (email === decodedEmail) {
+        const quary = { email: email };
+        const bookingApponment = await apponmentCallection
+          .find(quary)
+          .toArray();
+        return res.send(bookingApponment);
+      } else {
+        return req.status(403).send({ massage: "Forbidden access" });
+      }
     });
 
     app.post("/booking", async (req, res) => {
